@@ -1,23 +1,32 @@
 from rest_framework import generics, permissions, status
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework import viewsets, filters
-from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
+from rest_framework import filters
 
-from user import serializers, models, permissions
+from user import serializers, models, permissions as user_permissions
 
 
-class UserProfileViewSet(viewsets.ModelViewSet):
+class UserListCreateAPIView(generics.ListCreateAPIView):
     """handle creating and upating user profiles"""
     serializer_class = serializers.UserProfileSerializer
-
-    #get all objects from db
     queryset = models.UserProfile.objects.all()
-
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (permissions.UpdateOwnProfile,)
+    permission_classes = [permissions.IsAdminUser]
 
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name','email',)
 
+
+
+class UserDetailAPIView(generics.RetrieveAPIView):
+    serializer_class = serializers.UserProfileSerializer
+    queryset = models.UserProfile.objects.all()
+    permission_classes = [user_permissions.IsAdminUserorOwnProfile]
+
+class UserDestroyAPIView(generics.DestroyAPIView):
+    serializer_class = serializers.UserProfileSerializer
+    queryset = models.UserProfile.objects.all()
+    permission_classes = [permissions.IsAdminUser,]
+
+
+class UserUpdateAPIView(generics.UpdateAPIView):
+    serializer_class = serializers.UserProfileSerializer
+    queryset = models.UserProfile.objects.all()
+    permission_classes = [user_permissions.IsAdminUserorOwnProfile]

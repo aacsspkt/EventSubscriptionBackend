@@ -27,3 +27,11 @@ class UserProfileSerializer(serializers.ModelSerializer):
         )
 
         return user
+
+    def update(self, instance, validated_data):
+        user = self.context['request'].user
+        user.name = validated_data.get("name", instance.name)
+        user.email = validated_data.get("email", instance.email)
+        user.set_password(validated_data.get("password", instance.password))
+        user.save()
+        return user

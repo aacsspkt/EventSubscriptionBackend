@@ -1,7 +1,5 @@
 from django.db import models
-
 from user.models import UserProfile
-from venue.models import Venue
 
 
 class VideoStream(models.Model):
@@ -9,12 +7,12 @@ class VideoStream(models.Model):
     description = models.TextField(blank=True, null=True)
     stream_key = models.CharField(max_length=50, default="4nZmRBG9ZDio8dBHyJL2A2imZ98Qk7mPRWM7XQGedBNH")
     start_time  = models.DateTimeField()
-    venue = models.ForeignKey(Venue, on_delete=models.SET_DEFAULT, default="Not given")
+    thumbnail = models.CharField(max_length=200, default="https://dummyimage.com/720x600/ababab/ffffff&text=Stream")
     created = models.DateTimeField(auto_now_add=True)
+    # subscribed_by = models.ManyToManyField(User)
 
     def __str__(self) -> str:
         return self.title
-
 
 
 class Subscription(models.Model):
